@@ -24,6 +24,4 @@ public class Student {
 
     @OneToMany(mappedBy = "student")
     private Set<Grade> grades = new HashSet<>();
-
-
 }
