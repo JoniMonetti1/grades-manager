@@ -14,8 +14,12 @@ import java.util.Optional;
 
 @Service
 public class StudentServiceImpl implements StudentService{
-    @Autowired
     private StudentRepository studentRepository;
+
+    public StudentServiceImpl(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
+
     @Override
     public ResponseEntity<List<Student>> getStudentList() {
         List<Student> students = studentRepository.findAll();
