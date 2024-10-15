@@ -20,8 +20,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 public class StudentRepositoryTest {
 
+    private final StudentRepository studentRepository;
+
     @Autowired
-    private StudentRepository studentRepository;
+    public StudentRepositoryTest(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
+    }
 
     private Student student0;
 
