@@ -26,7 +26,7 @@ public class ProfessorController {
 
     @GetMapping("/{id}")
     @CrossOrigin
-    private ResponseEntity<Professor> getProfessorById (@PathVariable Integer id) {
+    private ResponseEntity<Professor> getProfessorById(@PathVariable Integer id) {
         return professorService.getProfessorById(id);
     }
 

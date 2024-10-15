@@ -2,18 +2,16 @@ package com.jonim.grades_manager.services;
 
 import com.jonim.grades_manager.models.Student;
 import com.jonim.grades_manager.repositories.StudentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class StudentServiceImpl implements StudentService{
+public class StudentServiceImpl implements StudentService {
     private StudentRepository studentRepository;
 
     public StudentServiceImpl(StudentRepository studentRepository) {

@@ -2,7 +2,6 @@ package com.jonim.grades_manager.controllers;
 
 import com.jonim.grades_manager.models.Student;
 import com.jonim.grades_manager.services.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
