@@ -2,6 +2,8 @@ package com.jonim.grades_manager.controllers;
 
 import com.jonim.grades_manager.models.Student;
 import com.jonim.grades_manager.services.StudentService;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,7 +13,7 @@ import java.util.List;
 @RequestMapping("/students")
 public class StudentController {
 
-    private StudentService studentService;
+    private final StudentService studentService;
 
     public StudentController(StudentService studentService) {
         this.studentService = studentService;
@@ -47,5 +49,12 @@ public class StudentController {
     @CrossOrigin
     private ResponseEntity<Void> deleteStudentById(@PathVariable Integer id) {
         return studentService.deleteStudentById(id);
+    }
+
+    @PutMapping("/{studentId}/assign-subject/{subjectId}")
+    @CrossOrigin
+    @Transactional
+    private ResponseEntity<Void> assignSubjectToStudent(@PathVariable Integer studentId,@PathVariable Integer subjectId) {
+        return studentService.assignSubjectToStudent(studentId, subjectId);
     }
 }

@@ -1,7 +1,10 @@
 package com.jonim.grades_manager.services;
 
 import com.jonim.grades_manager.models.Student;
+import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.StudentRepository;
+import com.jonim.grades_manager.repositories.SubjectRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -13,9 +16,13 @@ import java.util.Optional;
 @Service
 public class StudentServiceImpl implements StudentService {
     private StudentRepository studentRepository;
+    private SubjectRepository subjectRepository;
 
-    public StudentServiceImpl(StudentRepository studentRepository) {
+
+    @Autowired
+    public StudentServiceImpl(StudentRepository studentRepository, SubjectRepository subjectRepository) {
         this.studentRepository = studentRepository;
+        this.subjectRepository = subjectRepository;
     }
 
     @Override
@@ -64,6 +71,23 @@ public class StudentServiceImpl implements StudentService {
         if (optionalStudent.isPresent()) {
             studentRepository.deleteById(id);
             return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> assignSubjectToStudent(Integer studentId, Integer subjectId) {
+        Optional<Student> optionalStudent = studentRepository.findById(studentId);
+        Optional<Subject> optionalSubject = subjectRepository.findById(subjectId);
+
+        if (optionalStudent.isPresent() && optionalSubject.isPresent()) {
+            Student student = optionalStudent.get();
+            Subject subject = optionalSubject.get();
+            student.getSubjects().add(subject);
+            subject.getStudents().add(student);
+            studentRepository.save(student);
+            subjectRepository.save(subject);
+            return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }

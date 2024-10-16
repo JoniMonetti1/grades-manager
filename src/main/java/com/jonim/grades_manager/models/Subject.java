@@ -1,10 +1,7 @@
 package com.jonim.grades_manager.models;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -13,6 +10,7 @@ import java.util.Set;
 @Table(name = "subjects")
 @Getter
 @Setter
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class Subject {
@@ -21,7 +19,7 @@ public class Subject {
     private Integer id;
     private String name;
 
-    @ManyToMany(targetEntity = Student.class, fetch = FetchType.LAZY)
+    @ManyToMany(targetEntity = Student.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
             name = "student_subject",
             joinColumns = @JoinColumn(name = "subject_id"),

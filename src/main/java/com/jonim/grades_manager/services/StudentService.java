@@ -11,4 +11,5 @@ public interface StudentService {
     ResponseEntity<Student> saveStudent(Student student);
     ResponseEntity<Student> modifyStudent(Integer id, Student student);
     ResponseEntity<Void> deleteStudentById(Integer id);
+    ResponseEntity<Void> assignSubjectToStudent(Integer studentId, Integer subjectId);
 }

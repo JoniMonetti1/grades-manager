@@ -20,6 +20,9 @@ public class Student {
     private String name;
     private String surname;
 
+    @ManyToMany(mappedBy = "students")
+    private Set<Subject> subjects = new HashSet<>();
+
     @OneToMany(mappedBy = "student")
     private Set<Grade> grades = new HashSet<>();
 }
