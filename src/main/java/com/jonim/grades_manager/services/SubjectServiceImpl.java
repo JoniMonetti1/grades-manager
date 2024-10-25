@@ -67,4 +67,9 @@ public class SubjectServiceImpl implements SubjectService {
 
         return ResponseEntity.notFound().build();
     }
+
+    public ResponseEntity<Subject> findSubjectByIdAndStudentId(Integer subjectId, Integer studentId) {
+        Optional<Subject> optionalSubject = subjectRepository.findSubjectByIdAndStudentId(subjectId, studentId);
+        return optionalSubject.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
 }

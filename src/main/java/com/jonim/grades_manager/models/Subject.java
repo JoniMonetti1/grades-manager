@@ -19,14 +19,6 @@ public class Subject {
     private Integer id;
     private String name;
 
-    @ManyToMany(targetEntity = Student.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(
-            name = "student_subject",
-            joinColumns = @JoinColumn(name = "subject_id"),
-            inverseJoinColumns = @JoinColumn(name = "student_id")
-    )
-    private Set<Student> students = new HashSet<>();
-
     @OneToMany(mappedBy = "subject")
     private Set<Grade> grades = new HashSet<>();
 }

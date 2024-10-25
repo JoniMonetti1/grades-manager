@@ -46,4 +46,10 @@ public class SubjectController {
     ResponseEntity<Void> deleteSubjectById(@PathVariable Integer id) {
         return subjectService.deleteSubjectById(id);
     }
+
+    @GetMapping("/{id}/students/{studentId}")
+    @CrossOrigin
+    ResponseEntity<Subject> getSubjectByIdAndStudentId(@PathVariable Integer id, @PathVariable Integer studentId) {
+        return subjectService.findSubjectByIdAndStudentId(id, studentId);
+    }
 }

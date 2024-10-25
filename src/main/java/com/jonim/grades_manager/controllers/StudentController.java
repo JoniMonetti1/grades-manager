@@ -1,5 +1,6 @@
 package com.jonim.grades_manager.controllers;
 
+import com.jonim.grades_manager.models.GradeRequest;
 import com.jonim.grades_manager.models.Student;
 import com.jonim.grades_manager.services.StudentService;
 import jakarta.transaction.Transactional;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/students")
 public class StudentController {
+
 
     private final StudentService studentService;
 
@@ -53,8 +55,15 @@ public class StudentController {
 
     @PutMapping("/{studentId}/assign-subject/{subjectId}")
     @CrossOrigin
-    @Transactional
     private ResponseEntity<Void> assignSubjectToStudent(@PathVariable Integer studentId,@PathVariable Integer subjectId) {
         return studentService.assignSubjectToStudent(studentId, subjectId);
+    }
+
+    @PostMapping("/{studentId}/subjects/{subjectId}/grade")
+    @CrossOrigin
+    private ResponseEntity<String> assignGradeToStudent(@PathVariable Integer studentId,
+                                                        @PathVariable Integer subjectId,
+                                                        @RequestBody GradeRequest gradeRequest) {
+        return studentService.assignGradeToStudent(studentId, subjectId, gradeRequest);
     }
 }

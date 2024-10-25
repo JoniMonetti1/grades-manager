@@ -20,9 +20,12 @@ public class Student {
     private String name;
     private String surname;
 
-    @ManyToMany(mappedBy = "students")
+    @ManyToMany(targetEntity = Subject.class, fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    @JoinTable(
+            name = "students_subjects",
+            joinColumns = @JoinColumn(name = "student_id"),
+            inverseJoinColumns = @JoinColumn(name = "subject_id")
+    )
     private Set<Subject> subjects = new HashSet<>();
 
-    @OneToMany(mappedBy = "student")
-    private Set<Grade> grades = new HashSet<>();
 }

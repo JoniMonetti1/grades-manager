@@ -11,4 +11,5 @@ public interface SubjectService {
     ResponseEntity<Subject> saveSubject(Subject subject);
     ResponseEntity<Subject> modifySubject(Integer id, Subject subject);
     ResponseEntity<Void> deleteSubjectById(Integer id);
+    ResponseEntity<Subject> findSubjectByIdAndStudentId(Integer id, Integer studentId);
 }
