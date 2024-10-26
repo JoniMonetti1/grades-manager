@@ -7,8 +7,12 @@ import java.util.List;
 
 public interface GradeService {
     ResponseEntity<List<Grade>> getGradesList();
+
     ResponseEntity<Grade> getGradeById(Integer id);
+
     ResponseEntity<Grade> saveGrade(Grade grade);
+
     ResponseEntity<Grade> modifyGrade(Integer id, Grade grade);
+
     ResponseEntity<Void> deleteGradeById(Integer id);
 }

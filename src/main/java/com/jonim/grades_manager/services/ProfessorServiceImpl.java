@@ -1,7 +1,10 @@
 package com.jonim.grades_manager.services;
 
 import com.jonim.grades_manager.models.Professor;
+import com.jonim.grades_manager.models.ProfessorDTO;
+import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.ProfessorRepository;
+import com.jonim.grades_manager.repositories.SubjectRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -11,18 +14,22 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class ProfessorServiceImpl implements ProfessorService {
+public class ProfessorServiceImpl implements ProfessorService { //TODO: Adapt this class to ProfessorDTO implementation
 
     private ProfessorRepository professorRepository;
+    private SubjectRepository subjectRepository;
 
-    public ProfessorServiceImpl(ProfessorRepository professorRepository) {
+    public ProfessorServiceImpl(ProfessorRepository professorRepository, SubjectRepository subjectRepository) {
         this.professorRepository = professorRepository;
+        this.subjectRepository = subjectRepository;
     }
 
     @Override
-    public ResponseEntity<Professor> getProfessorById(Integer id) {
+    public ResponseEntity<ProfessorDTO> getProfessorById(Integer id) {
         Optional<Professor> professorOptional = professorRepository.findById(id);
-        return professorOptional.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+        return professorOptional
+                .map(professor -> ResponseEntity.ok(new ProfessorDTO(professor)))
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Override
@@ -62,6 +69,21 @@ public class ProfessorServiceImpl implements ProfessorService {
         if (optionalProfessor.isPresent()) {
             professorRepository.deleteById(id);
             return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @Override
+    public ResponseEntity<Void> assignSubjectToProfessor(Integer professorId, Integer subjectId) {
+        Optional<Professor> optionalProfessor = professorRepository.findById(professorId);
+        Optional<Subject> optionalSubject = subjectRepository.findById(subjectId);
+
+        if (optionalProfessor.isPresent() && optionalSubject.isPresent()) {
+            Professor professor = optionalProfessor.get();
+            Subject subject = optionalSubject.get();
+            professor.setSubject(subject);
+            professorRepository.save(professor);
+            return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }

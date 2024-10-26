@@ -1,6 +1,7 @@
 package com.jonim.grades_manager.controllers;
 
 import com.jonim.grades_manager.models.Professor;
+import com.jonim.grades_manager.models.ProfessorDTO;
 import com.jonim.grades_manager.services.ProfessorService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +27,7 @@ public class ProfessorController {
 
     @GetMapping("/{id}")
     @CrossOrigin
-    private ResponseEntity<Professor> getProfessorById(@PathVariable Integer id) {
+    private ResponseEntity<ProfessorDTO> getProfessorById(@PathVariable Integer id) {
         return professorService.getProfessorById(id);
     }
 
@@ -46,5 +47,11 @@ public class ProfessorController {
     @CrossOrigin
     private ResponseEntity<Void> deleteProfessorById(@PathVariable Integer id) {
         return professorService.deleteProfessorById(id);
+    }
+
+    @PutMapping("/{id}/subjects/{subjectId}")
+    @CrossOrigin
+    private ResponseEntity<Void> assignSubjectToProfessor(@PathVariable Integer id, @PathVariable Integer subjectId) {
+        return professorService.assignSubjectToProfessor(id, subjectId);
     }
 }

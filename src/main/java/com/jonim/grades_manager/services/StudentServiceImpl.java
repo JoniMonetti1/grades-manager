@@ -7,15 +7,13 @@ import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.GradeRepository;
 import com.jonim.grades_manager.repositories.StudentRepository;
 import com.jonim.grades_manager.repositories.SubjectRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -48,13 +46,10 @@ public class StudentServiceImpl implements StudentService {
         if (optionalStudent.isPresent()) {
             Student student = optionalStudent.get();
 
-            // Por cada materia del estudiante, carga las notas específicas del estudiante
+            // Cargar las notas específicas del estudiante para cada materia
             student.getSubjects().forEach(subject -> {
-                List<Subject> subjectWithGrades = subjectRepository.findSubjectWithGradesByStudentIdAndSubjectId(id, subject.getId());
-                if (!subjectWithGrades.isEmpty()) {
-                    Subject subjectWithStudentGrades = subjectWithGrades.get(0);
-                    subject.setGrades(subjectWithStudentGrades.getGrades()); // Sobreescribe las notas con las del estudiante específico
-                }
+                List<Grade> grades = gradeRepository.findGradesByStudentIdAndSubjectId(id, subject.getId());
+                subject.setGrades(new HashSet<>(grades)); // Asigna solo las notas específicas del estudiante
             });
 
             return ResponseEntity.ok(student);

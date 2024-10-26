@@ -3,8 +3,6 @@ package com.jonim.grades_manager.controllers;
 import com.jonim.grades_manager.models.GradeRequest;
 import com.jonim.grades_manager.models.Student;
 import com.jonim.grades_manager.services.StudentService;
-import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,7 +53,7 @@ public class StudentController {
 
     @PutMapping("/{studentId}/assign-subject/{subjectId}")
     @CrossOrigin
-    private ResponseEntity<Void> assignSubjectToStudent(@PathVariable Integer studentId,@PathVariable Integer subjectId) {
+    private ResponseEntity<Void> assignSubjectToStudent(@PathVariable Integer studentId, @PathVariable Integer subjectId) {
         return studentService.assignSubjectToStudent(studentId, subjectId);
     }
 

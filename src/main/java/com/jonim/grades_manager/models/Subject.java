@@ -1,5 +1,6 @@
 package com.jonim.grades_manager.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,6 +24,7 @@ public class Subject {
     private Set<Grade> grades = new HashSet<>();
 
     @ManyToMany(mappedBy = "subjects")
+    @JsonIgnore
     private Set<Student> students = new HashSet<>();
 }
 
