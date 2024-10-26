@@ -21,5 +21,8 @@ public class Subject {
 
     @OneToMany(mappedBy = "subject")
     private Set<Grade> grades = new HashSet<>();
+
+    @ManyToMany(mappedBy = "subjects")
+    private Set<Student> students = new HashSet<>();
 }
 
