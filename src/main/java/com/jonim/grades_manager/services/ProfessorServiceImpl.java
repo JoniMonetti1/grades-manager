@@ -1,11 +1,12 @@
 package com.jonim.grades_manager.services;
 
-import com.jonim.grades_manager.models.Professor;
-import com.jonim.grades_manager.models.ProfessorCreateUpdateDTO;
-import com.jonim.grades_manager.models.ProfessorDTO;
-import com.jonim.grades_manager.models.Subject;
+import com.jonim.grades_manager.models.*;
 import com.jonim.grades_manager.repositories.ProfessorRepository;
 import com.jonim.grades_manager.repositories.SubjectRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -35,12 +36,16 @@ public class ProfessorServiceImpl implements ProfessorService { //TODO: Adapt th
     }
 
     @Override
-    public ResponseEntity<List<ProfessorDTO>> getProfessorList() {
-        List<Professor> professorList = professorRepository.findAll();
-        List<ProfessorDTO> professorDTOs = professorList.stream()
+    public ResponseEntity<Page<ProfessorDTO>> getProfessorList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Professor> professorPage = professorRepository.findAll(pageable);
+
+        List<ProfessorDTO> professorDTOs = professorPage.stream()
                 .map(ProfessorDTO::new)
                 .collect(Collectors.toList());
-        return professorDTOs.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(professorDTOs);
+
+        Page<ProfessorDTO> professorDTOsPage = new PageImpl<>(professorDTOs, pageable, professorPage.getTotalElements());
+        return professorDTOs.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(professorDTOsPage);
     }
 
     @Override

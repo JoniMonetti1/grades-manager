@@ -2,6 +2,9 @@ package com.jonim.grades_manager.services;
 
 import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.SubjectRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -19,9 +22,10 @@ public class SubjectServiceImpl implements SubjectService {
     }
 
     @Override
-    public ResponseEntity<List<Subject>> getSubjectList() {
-        List<Subject> subjectList = subjectRepository.findAll();
-        return subjectList.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(subjectList);
+    public ResponseEntity<Page<Subject>> getSubjectList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Subject> subjectPage = subjectRepository.findAll(pageable);
+        return subjectPage.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(subjectPage);
     }
 
     @Override

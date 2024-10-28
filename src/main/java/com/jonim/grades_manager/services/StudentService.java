@@ -2,12 +2,13 @@ package com.jonim.grades_manager.services;
 
 import com.jonim.grades_manager.models.GradeRequest;
 import com.jonim.grades_manager.models.Student;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface StudentService {
-    ResponseEntity<List<Student>> getStudentList();
+    ResponseEntity<Page<Student>> getStudentList(int page, int size);
 
     ResponseEntity<Student> getStudentById(Integer id);
 

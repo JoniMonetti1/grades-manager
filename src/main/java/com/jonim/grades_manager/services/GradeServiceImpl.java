@@ -2,6 +2,9 @@ package com.jonim.grades_manager.services;
 
 import com.jonim.grades_manager.models.Grade;
 import com.jonim.grades_manager.repositories.GradeRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -20,9 +23,10 @@ public class GradeServiceImpl implements GradeService {
     }
 
     @Override
-    public ResponseEntity<List<Grade>> getGradesList() {
-        List<Grade> grades = gradeRepository.findAll();
-        return grades.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(grades);
+    public ResponseEntity<Page<Grade>> getGradesList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Grade> gradesPage = gradeRepository.findAll(pageable);
+        return gradesPage.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(gradesPage);
     }
 
     @Override

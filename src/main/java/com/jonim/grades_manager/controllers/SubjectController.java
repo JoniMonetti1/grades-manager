@@ -2,6 +2,7 @@ package com.jonim.grades_manager.controllers;
 
 import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.services.SubjectService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,8 +20,10 @@ public class SubjectController {
 
     @GetMapping
     @CrossOrigin
-    ResponseEntity<List<Subject>> getSubjectList() {
-        return subjectService.getSubjectList();
+    ResponseEntity<Page<Subject>> getSubjectList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return subjectService.getSubjectList(page, size);
     }
 
     @GetMapping("/{id}")

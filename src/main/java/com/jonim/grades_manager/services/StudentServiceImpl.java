@@ -7,6 +7,9 @@ import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.GradeRepository;
 import com.jonim.grades_manager.repositories.StudentRepository;
 import com.jonim.grades_manager.repositories.SubjectRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,12 +34,13 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<List<Student>> getStudentList() {
-        List<Student> students = studentRepository.findAll();
-        if (students.isEmpty()) {
+    public ResponseEntity<Page<Student>> getStudentList(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Student> studentsPage = studentRepository.findAll(pageable);
+        if (studentsPage.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.ok(students);
+        return ResponseEntity.ok(studentsPage);
     }
 
     @Override

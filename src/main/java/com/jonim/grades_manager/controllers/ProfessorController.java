@@ -3,6 +3,7 @@ package com.jonim.grades_manager.controllers;
 import com.jonim.grades_manager.models.ProfessorCreateUpdateDTO;
 import com.jonim.grades_manager.models.ProfessorDTO;
 import com.jonim.grades_manager.services.ProfessorService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,8 +22,10 @@ public class ProfessorController {
 
     @GetMapping
     @CrossOrigin
-    private ResponseEntity<List<ProfessorDTO>> getProfessorList() {
-        return professorService.getProfessorList();
+    private ResponseEntity<Page<ProfessorDTO>> getProfessorList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return professorService.getProfessorList(page, size);
     }
 
     @GetMapping("/{id}")

@@ -2,6 +2,7 @@ package com.jonim.grades_manager.controllers;
 
 import com.jonim.grades_manager.models.Grade;
 import com.jonim.grades_manager.services.GradeService;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,8 +19,10 @@ public class GradeController {
 
     @GetMapping
     @CrossOrigin
-    public ResponseEntity<List<Grade>> getGradesList() {
-        return gradeService.getGradesList();
+    public ResponseEntity<Page<Grade>> getGradesList(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        return gradeService.getGradesList(page, size);
     }
 
     @GetMapping("/{id}")
