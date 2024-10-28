@@ -1,5 +1,6 @@
 package com.jonim.grades_manager.services;
 
+import com.jonim.grades_manager.exceptions.ResourceNotFoundException;
 import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.SubjectRepository;
 import org.springframework.data.domain.Page;
@@ -25,7 +26,7 @@ public class SubjectServiceImpl implements SubjectService {
     public ResponseEntity<Page<Subject>> getSubjectList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Subject> subjectPage = subjectRepository.findAll(pageable);
-        return subjectPage.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(subjectPage);
+        return ResponseEntity.ok(subjectPage);
     }
 
     @Override
@@ -36,6 +37,10 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public ResponseEntity<Subject> saveSubject(Subject subject) {
+        if (subjectRepository.findById(subject.getId()).isPresent()) {
+            throw new ResourceNotFoundException("Subject already exists with id: " + subject.getId());
+        }
+
         Subject savedSubject = subjectRepository.save(subject);
 
         URI location = ServletUriComponentsBuilder
@@ -72,6 +77,7 @@ public class SubjectServiceImpl implements SubjectService {
         return ResponseEntity.notFound().build();
     }
 
+    @Override
     public ResponseEntity<Subject> findSubjectByIdAndStudentId(Integer subjectId, Integer studentId) {
         Optional<Subject> optionalSubject = subjectRepository.findSubjectByIdAndStudentId(subjectId, studentId);
         return optionalSubject.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
