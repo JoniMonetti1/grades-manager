@@ -1,6 +1,7 @@
 package com.jonim.grades_manager.services;
 
 import com.jonim.grades_manager.models.Professor;
+import com.jonim.grades_manager.models.ProfessorCreateUpdateDTO;
 import com.jonim.grades_manager.models.ProfessorDTO;
 import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.ProfessorRepository;
@@ -12,6 +13,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ProfessorServiceImpl implements ProfessorService { //TODO: Adapt this class to ProfessorDTO implementation
@@ -33,13 +35,25 @@ public class ProfessorServiceImpl implements ProfessorService { //TODO: Adapt th
     }
 
     @Override
-    public ResponseEntity<List<Professor>> getProfessorList() {
+    public ResponseEntity<List<ProfessorDTO>> getProfessorList() {
         List<Professor> professorList = professorRepository.findAll();
-        return professorList.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(professorList);
+        List<ProfessorDTO> professorDTOs = professorList.stream()
+                .map(ProfessorDTO::new)
+                .collect(Collectors.toList());
+        return professorDTOs.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(professorDTOs);
     }
 
     @Override
-    public ResponseEntity<Professor> saveProfessor(Professor professor) {
+    public ResponseEntity<ProfessorDTO> saveProfessor(ProfessorCreateUpdateDTO createDTO) {
+        Professor professor = new Professor();
+        professor.setName(createDTO.getName());
+        professor.setSurname(createDTO.getSurname());
+
+        Subject subject = subjectRepository.findById(createDTO.getSubjectId())
+                .orElseThrow(() -> new IllegalArgumentException("Subject not found"));
+
+        professor.setSubject(subject);
+
         Professor savedProfessor = professorRepository.save(professor);
 
         URI location = ServletUriComponentsBuilder
@@ -48,19 +62,29 @@ public class ProfessorServiceImpl implements ProfessorService { //TODO: Adapt th
                 .buildAndExpand(savedProfessor.getId())
                 .toUri();
 
-        return ResponseEntity.created(location).body(savedProfessor);
+        return ResponseEntity.created(location).body(new ProfessorDTO(savedProfessor));
     }
 
     @Override
-    public ResponseEntity<Professor> modifyProfessor(Integer id, Professor professor) {
-        Optional<Professor> optionalProfessorToModify = professorRepository.findById(id);
+    public ResponseEntity<ProfessorDTO> modifyProfessor(Integer id, ProfessorCreateUpdateDTO updateDTO) { //TODO: This method do not update, its create a new Professor CHECK
+        return professorRepository.findById(id)
+                .map(professor -> {
+                    Subject subject = updateDTO.getSubjectId() != null ? subjectRepository.findById(updateDTO.getSubjectId())
+                            .orElseThrow(() -> new IllegalArgumentException("Subject not found"))
+                            : null;
 
-        if (optionalProfessorToModify.isPresent()) {
-            professor.setId(id);
-            Professor modifiedProfessor = professorRepository.save(professor);
-            return ResponseEntity.ok(modifiedProfessor);
-        }
-        return ResponseEntity.notFound().build();
+                    Professor updatedProfessor = Professor.builder()
+                            .id(id)
+                            .name(updateDTO.getName())
+                            .surname(updateDTO.getSurname())
+                            .subject(subject)
+                            .build();
+
+                    return ResponseEntity.ok(
+                            new ProfessorDTO(professorRepository.save(updatedProfessor))
+                    );
+                })
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @Override

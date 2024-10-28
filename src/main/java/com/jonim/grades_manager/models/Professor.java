@@ -16,7 +16,7 @@ public class Professor {
     private Integer id;
     private String name;
     private String surname;
-    @OneToOne(targetEntity = Subject.class, cascade = CascadeType.REMOVE)
+    @ManyToOne(targetEntity = Subject.class)
     @JoinColumn(name = "subject_id")
     private Subject subject;
 }

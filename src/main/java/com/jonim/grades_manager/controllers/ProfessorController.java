@@ -1,6 +1,6 @@
 package com.jonim.grades_manager.controllers;
 
-import com.jonim.grades_manager.models.Professor;
+import com.jonim.grades_manager.models.ProfessorCreateUpdateDTO;
 import com.jonim.grades_manager.models.ProfessorDTO;
 import com.jonim.grades_manager.services.ProfessorService;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +21,7 @@ public class ProfessorController {
 
     @GetMapping
     @CrossOrigin
-    private ResponseEntity<List<Professor>> getProfessorList() {
+    private ResponseEntity<List<ProfessorDTO>> getProfessorList() {
         return professorService.getProfessorList();
     }
 
@@ -33,14 +33,14 @@ public class ProfessorController {
 
     @PostMapping
     @CrossOrigin
-    private ResponseEntity<Professor> saveProfessor(@RequestBody Professor professor) {
-        return professorService.saveProfessor(professor);
+    private ResponseEntity<ProfessorDTO> saveProfessor(@RequestBody ProfessorCreateUpdateDTO createDTO) {
+        return professorService.saveProfessor(createDTO);
     }
 
     @PutMapping("/{id}")
     @CrossOrigin
-    private ResponseEntity<Professor> modifyProfessor(@PathVariable Integer id, @RequestBody Professor professor) {
-        return professorService.modifyProfessor(id, professor);
+    private ResponseEntity<ProfessorDTO> modifyProfessor(@PathVariable Integer id, @RequestBody ProfessorCreateUpdateDTO updateDTO) {
+        return professorService.modifyProfessor(id, updateDTO);
     }
 
     @DeleteMapping("/{id}")

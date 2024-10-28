@@ -1,6 +1,6 @@
 package com.jonim.grades_manager.services;
 
-import com.jonim.grades_manager.models.Professor;
+import com.jonim.grades_manager.models.ProfessorCreateUpdateDTO;
 import com.jonim.grades_manager.models.ProfessorDTO;
 import org.springframework.http.ResponseEntity;
 
@@ -10,11 +10,11 @@ public interface ProfessorService {
 
     ResponseEntity<ProfessorDTO> getProfessorById(Integer id);
 
-    ResponseEntity<List<Professor>> getProfessorList();
+    ResponseEntity<List<ProfessorDTO>> getProfessorList();
 
-    ResponseEntity<Professor> saveProfessor(Professor professor);
+    ResponseEntity<ProfessorDTO> saveProfessor(ProfessorCreateUpdateDTO createDTO);
 
-    ResponseEntity<Professor> modifyProfessor(Integer id, Professor professor);
+    ResponseEntity<ProfessorDTO> modifyProfessor(Integer id, ProfessorCreateUpdateDTO updateDTO);
 
     ResponseEntity<Void> deleteProfessorById(Integer id);
 
