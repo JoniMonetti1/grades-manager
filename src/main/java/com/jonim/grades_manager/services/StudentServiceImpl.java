@@ -1,5 +1,6 @@
 package com.jonim.grades_manager.services;
 
+import com.jonim.grades_manager.exceptions.ResourceNotFoundException;
 import com.jonim.grades_manager.models.Grade;
 import com.jonim.grades_manager.models.GradeRequest;
 import com.jonim.grades_manager.models.Student;
@@ -37,9 +38,6 @@ public class StudentServiceImpl implements StudentService {
     public ResponseEntity<Page<Student>> getStudentList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Student> studentsPage = studentRepository.findAll(pageable);
-        if (studentsPage.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
         return ResponseEntity.ok(studentsPage);
     }
 
@@ -64,6 +62,9 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseEntity<Student> saveStudent(Student student) {
+        if (studentRepository.findById(student.getStudentId()).isPresent()) {
+            throw new ResourceNotFoundException("Student already exists with id: " + student.getStudentId());
+        }
         Student savedStudent = studentRepository.save(student);
 
         URI location = ServletUriComponentsBuilder
@@ -117,13 +118,13 @@ public class StudentServiceImpl implements StudentService {
         Optional<Student> optionalStudent = studentRepository.findById(studentId);
         if (optionalStudent.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró el estudiante");
+                    .body("Student not found");
         }
 
         Optional<Subject> optionalSubject = subjectRepository.findSubjectByIdAndStudentId(subjectId, studentId);
         if (optionalSubject.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body("No se encontró la materia para el estudiante especificado.");
+                    .body("The subject was not found for the specified student.");
         }
 
         Grade grade = Grade.builder()

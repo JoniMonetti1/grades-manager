@@ -103,7 +103,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void shoulReturnAEmptyPage() {
+    public void shouldReturnAEmptyPage() {
         //given
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -119,7 +119,7 @@ public class SubjectServiceTest {
     }
 
     @Test
-    public void shoulReturnASubjectById() {
+    public void shouldReturnASubjectById() {
         //given
         given(subjectRepository.findById(subject0.getId())).willReturn(Optional.of(subject0));
 
