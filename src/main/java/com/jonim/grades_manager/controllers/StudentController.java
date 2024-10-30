@@ -4,12 +4,8 @@ import com.jonim.grades_manager.models.GradeRequest;
 import com.jonim.grades_manager.models.Student;
 import com.jonim.grades_manager.services.StudentService;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/students")
@@ -58,7 +54,7 @@ public class StudentController {
 
     @PutMapping("/{studentId}/assign-subject/{subjectId}")
     @CrossOrigin
-    private ResponseEntity<Void> assignSubjectToStudent(@PathVariable Integer studentId, @PathVariable Integer subjectId) {
+    private ResponseEntity<String> assignSubjectToStudent(@PathVariable Integer studentId, @PathVariable Integer subjectId) {
         return studentService.assignSubjectToStudent(studentId, subjectId);
     }
 

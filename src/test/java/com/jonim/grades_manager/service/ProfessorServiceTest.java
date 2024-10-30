@@ -1,7 +1,9 @@
 package com.jonim.grades_manager.service;
 
-import com.jonim.grades_manager.exceptions.ResourceNotFoundException;
-import com.jonim.grades_manager.models.*;
+import com.jonim.grades_manager.models.Professor;
+import com.jonim.grades_manager.models.ProfessorCreateUpdateDTO;
+import com.jonim.grades_manager.models.ProfessorDTO;
+import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.ProfessorRepository;
 import com.jonim.grades_manager.repositories.SubjectRepository;
 import com.jonim.grades_manager.services.ProfessorServiceImpl;
@@ -27,7 +29,6 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -85,32 +86,6 @@ public class ProfessorServiceTest {
         assertThat(saveProfessor.getBody()).isNotNull();
         assertThat(saveProfessor.getBody().getName()).isEqualTo("Joni");
         assertThat(saveProfessor.getBody().getSurname()).isEqualTo("Monetti");
-    }
-
-    @Test
-    public void shouldNotSaveThrowException() {
-        //given: Simulamos que el sujeto ya existe en la base de datos
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
-
-        given(professorRepository.existsByNameAndSurnameAndSubjectId(
-                professor0.getName(),
-                professor0.getSurname(),
-                professor0.getSubjectId()
-        )).willReturn(true);
-
-        //when: Esperamos que el método falle al intentar guardar un `professor` duplicado
-        assertThrows(ResourceNotFoundException.class, () ->
-                professorService.saveProfessor(professor0));
-
-        //then
-        verify(professorRepository).existsByNameAndSurnameAndSubjectId(
-                professor0.getName(),
-                professor0.getSurname(),
-                professor0.getSubjectId()
-        );
-        verify(professorRepository, never()).save(any(Professor.class));
-        verify(professorRepository, never()).save(any(Professor.class));
     }
 
     @Test
@@ -172,7 +147,6 @@ public class ProfessorServiceTest {
         given(professorRepository.save(any(Professor.class))).willReturn(expectedProfessor);
 
 
-
         //when
         ResponseEntity<ProfessorDTO> updatedProfessor = professorService.modifyProfessor(expectedProfessor.getId(), professor0);
 
@@ -214,7 +188,7 @@ public class ProfessorServiceTest {
         given(subjectRepository.findById(subjectId)).willReturn(Optional.of(subject));
 
         // when
-        ResponseEntity<Void> response = professorService.assignSubjectToProfessor(professorId, subjectId);
+        ResponseEntity<String> response = professorService.assignSubjectToProfessor(professorId, subjectId);
 
         // then
         assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -241,7 +215,7 @@ public class ProfessorServiceTest {
         given(subjectRepository.findById(subjectId)).willReturn(Optional.of(subject));
 
         // when
-        ResponseEntity<Void> response = professorService.assignSubjectToProfessor(professorId, subjectId);
+        ResponseEntity<String> response = professorService.assignSubjectToProfessor(professorId, subjectId);
 
         // then
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
@@ -262,7 +236,7 @@ public class ProfessorServiceTest {
         given(subjectRepository.findById(subjectId)).willReturn(Optional.empty());
 
         // when
-        ResponseEntity<Void> response = professorService.assignSubjectToProfessor(professorId, subjectId);
+        ResponseEntity<String> response = professorService.assignSubjectToProfessor(professorId, subjectId);
 
         // then
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());

@@ -16,6 +16,10 @@ public class ProfessorDTO {
         this.id = professor.getId();
         this.name = professor.getName();
         this.surname = professor.getSurname();
-        this.subject = new SubjectDTO(professor.getSubject());
+        if (professor.getSubject() != null) {
+            this.subject = new SubjectDTO(professor.getSubject());
+        } else {
+            this.subject = null;
+        }
     }
 }

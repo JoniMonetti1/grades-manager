@@ -1,6 +1,5 @@
 package com.jonim.grades_manager.services;
 
-import com.jonim.grades_manager.exceptions.ResourceNotFoundException;
 import com.jonim.grades_manager.models.Grade;
 import com.jonim.grades_manager.models.GradeRequest;
 import com.jonim.grades_manager.models.Student;
@@ -62,9 +61,6 @@ public class StudentServiceImpl implements StudentService {
 
     @Override
     public ResponseEntity<Student> saveStudent(Student student) {
-        if (studentRepository.findById(student.getStudentId()).isPresent()) {
-            throw new ResourceNotFoundException("Student already exists with id: " + student.getStudentId());
-        }
         Student savedStudent = studentRepository.save(student);
 
         URI location = ServletUriComponentsBuilder
@@ -99,7 +95,7 @@ public class StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public ResponseEntity<Void> assignSubjectToStudent(Integer studentId, Integer subjectId) {
+    public ResponseEntity<String> assignSubjectToStudent(Integer studentId, Integer subjectId) {
         Optional<Student> optionalStudent = studentRepository.findById(studentId);
         Optional<Subject> optionalSubject = subjectRepository.findById(subjectId);
 
@@ -108,7 +104,7 @@ public class StudentServiceImpl implements StudentService {
             Subject subject = optionalSubject.get();
             student.getSubjects().add(subject);
             studentRepository.save(student);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Student subject assigned");
         }
         return ResponseEntity.notFound().build();
     }

@@ -1,6 +1,5 @@
 package com.jonim.grades_manager.services;
 
-import com.jonim.grades_manager.exceptions.ResourceNotFoundException;
 import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.SubjectRepository;
 import org.springframework.data.domain.Page;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -37,10 +35,6 @@ public class SubjectServiceImpl implements SubjectService {
 
     @Override
     public ResponseEntity<Subject> saveSubject(Subject subject) {
-        if (subjectRepository.findById(subject.getId()).isPresent()) {
-            throw new ResourceNotFoundException("Subject already exists with id: " + subject.getId());
-        }
-
         Subject savedSubject = subjectRepository.save(subject);
 
         URI location = ServletUriComponentsBuilder

@@ -5,8 +5,6 @@ import com.jonim.grades_manager.models.ProfessorDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 public interface ProfessorService {
 
     ResponseEntity<ProfessorDTO> getProfessorById(Integer id);
@@ -19,5 +17,5 @@ public interface ProfessorService {
 
     ResponseEntity<Void> deleteProfessorById(Integer id);
 
-    ResponseEntity<Void> assignSubjectToProfessor(Integer professorId, Integer subjectId);
+    ResponseEntity<String> assignSubjectToProfessor(Integer professorId, Integer subjectId);
 }

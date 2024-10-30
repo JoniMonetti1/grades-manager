@@ -1,6 +1,5 @@
 package com.jonim.grades_manager.service;
 
-import com.jonim.grades_manager.exceptions.ResourceNotFoundException;
 import com.jonim.grades_manager.models.Grade;
 import com.jonim.grades_manager.models.GradeRequest;
 import com.jonim.grades_manager.models.Student;
@@ -31,7 +30,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
@@ -77,20 +75,6 @@ public class StudentServiceTest {
         //then
         assertThat(savedStudent.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(savedStudent).isNotNull();
-    }
-
-    @Test
-    public void shouldNotSaveThrowException() {
-        //given: Simulamos que el sujeto ya existe en la base de datos
-        given(studentRepository.findById(student0.getStudentId()))
-                .willReturn(Optional.of(student0));
-
-        //when: Esperamos que el método falle al intentar guardar un `student` duplicado
-        assertThrows(ResourceNotFoundException.class, () ->
-                studentService.saveStudent(student0));
-
-        //then: Verificamos que nunca se haya intentado guardar
-        verify(studentRepository, never()).save(any(Student.class));
     }
 
     @Test
@@ -195,7 +179,7 @@ public class StudentServiceTest {
     }
 
     @Test
-    public void shouldUpdateSubject() {
+    public void shouldUpdateStudent() {
         //given
         given(studentRepository.findById(student0.getStudentId())).willReturn(Optional.of(student0));
         given(studentRepository.save(student0)).willReturn(student0);
@@ -210,7 +194,7 @@ public class StudentServiceTest {
     }
 
     @Test
-    public void shouldDeleteSubject() {
+    public void shouldDeleteStudent() {
         //given
         Integer studentId = student0.getStudentId();
         given(studentRepository.findById(studentId)).willReturn(Optional.of(student0));
@@ -237,7 +221,7 @@ public class StudentServiceTest {
         given(subjectRepository.findById(subjectId)).willReturn(Optional.of(subject));
 
         // when
-        ResponseEntity<Void> response = studentService.assignSubjectToStudent(studentId, subjectId);
+        ResponseEntity<String> response = studentService.assignSubjectToStudent(studentId, subjectId);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -253,7 +237,7 @@ public class StudentServiceTest {
         given(studentRepository.findById(studentId)).willReturn(Optional.empty());
 
         // when
-        ResponseEntity<Void> response = studentService.assignSubjectToStudent(studentId, subjectId);
+        ResponseEntity<String> response = studentService.assignSubjectToStudent(studentId, subjectId);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -272,7 +256,7 @@ public class StudentServiceTest {
         given(subjectRepository.findById(subjectId)).willReturn(Optional.empty());
 
         // when
-        ResponseEntity<Void> response = studentService.assignSubjectToStudent(studentId, subjectId);
+        ResponseEntity<String> response = studentService.assignSubjectToStudent(studentId, subjectId);
 
         // then
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);

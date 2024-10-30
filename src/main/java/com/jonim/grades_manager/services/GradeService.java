@@ -4,8 +4,6 @@ import com.jonim.grades_manager.models.Grade;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 public interface GradeService {
     ResponseEntity<Page<Grade>> getGradesList(int page, int size);
 

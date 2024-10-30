@@ -21,13 +21,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class StudentRepositoryTest {
 
     private final StudentRepository studentRepository;
+    private Student student0;
 
     @Autowired
     public StudentRepositoryTest(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
     }
-
-    private Student student0;
 
     @BeforeEach
     public void setUp() {

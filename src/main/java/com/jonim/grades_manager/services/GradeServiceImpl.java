@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -26,7 +25,7 @@ public class GradeServiceImpl implements GradeService {
     public ResponseEntity<Page<Grade>> getGradesList(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Grade> gradesPage = gradeRepository.findAll(pageable);
-        return gradesPage.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(gradesPage);
+        return ResponseEntity.ok(gradesPage);
     }
 
     @Override

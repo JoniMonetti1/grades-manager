@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/professors")
 public class ProfessorController {
@@ -54,7 +52,7 @@ public class ProfessorController {
 
     @PutMapping("/{id}/subjects/{subjectId}")
     @CrossOrigin
-    private ResponseEntity<Void> assignSubjectToProfessor(@PathVariable Integer id, @PathVariable Integer subjectId) {
+    private ResponseEntity<String> assignSubjectToProfessor(@PathVariable Integer id, @PathVariable Integer subjectId) {
         return professorService.assignSubjectToProfessor(id, subjectId);
     }
 }

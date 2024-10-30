@@ -1,7 +1,9 @@
 package com.jonim.grades_manager.services;
 
-import com.jonim.grades_manager.exceptions.ResourceNotFoundException;
-import com.jonim.grades_manager.models.*;
+import com.jonim.grades_manager.models.Professor;
+import com.jonim.grades_manager.models.ProfessorCreateUpdateDTO;
+import com.jonim.grades_manager.models.ProfessorDTO;
+import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.ProfessorRepository;
 import com.jonim.grades_manager.repositories.SubjectRepository;
 import org.springframework.data.domain.Page;
@@ -52,18 +54,14 @@ public class ProfessorServiceImpl implements ProfessorService { //TODO: Adapt th
     @Override
     public ResponseEntity<ProfessorDTO> saveProfessor(ProfessorCreateUpdateDTO createDTO) {
 
-        if (professorRepository.existsByNameAndSurnameAndSubjectId(createDTO.getName(), createDTO.getSurname(), createDTO.getSubjectId())) {
-            throw new ResourceNotFoundException("Professor already exists with name, surname and subject: " + createDTO.getName() + " " + createDTO.getSurname() + " - " + createDTO.getSubjectId());
-        }
-
         Professor professor = new Professor();
         professor.setName(createDTO.getName());
         professor.setSurname(createDTO.getSurname());
 
-        Subject subject = subjectRepository.findById(createDTO.getSubjectId())
-                .orElseThrow(() -> new IllegalArgumentException("Subject not found"));
-
-        professor.setSubject(subject);
+        if (createDTO.getSubjectId() != null) {
+            Optional<Subject> optionalSubject = subjectRepository.findById(createDTO.getSubjectId());
+            optionalSubject.ifPresent(professor::setSubject);
+        }
 
         Professor savedProfessor = professorRepository.save(professor);
 
@@ -109,7 +107,7 @@ public class ProfessorServiceImpl implements ProfessorService { //TODO: Adapt th
     }
 
     @Override
-    public ResponseEntity<Void> assignSubjectToProfessor(Integer professorId, Integer subjectId) {
+    public ResponseEntity<String> assignSubjectToProfessor(Integer professorId, Integer subjectId) {
         Optional<Professor> optionalProfessor = professorRepository.findById(professorId);
         Optional<Subject> optionalSubject = subjectRepository.findById(subjectId);
 
@@ -118,7 +116,7 @@ public class ProfessorServiceImpl implements ProfessorService { //TODO: Adapt th
             Subject subject = optionalSubject.get();
             professor.setSubject(subject);
             professorRepository.save(professor);
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok("Subject assigned");
         }
         return ResponseEntity.notFound().build();
     }

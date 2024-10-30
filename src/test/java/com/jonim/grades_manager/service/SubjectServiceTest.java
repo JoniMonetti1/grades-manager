@@ -1,6 +1,5 @@
 package com.jonim.grades_manager.service;
 
-import com.jonim.grades_manager.exceptions.ResourceNotFoundException;
 import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.repositories.SubjectRepository;
 import com.jonim.grades_manager.services.SubjectServiceImpl;
@@ -24,11 +23,10 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 public class SubjectServiceTest {
@@ -64,20 +62,6 @@ public class SubjectServiceTest {
         //then
         assertThat(savedSubject.getStatusCode()).isEqualTo(HttpStatus.CREATED);
         assertThat(savedSubject).isNotNull();
-    }
-
-    @Test
-    public void shouldNotSaveThrowException() {
-        //given: Simulamos que el sujeto ya existe en la base de datos
-        given(subjectRepository.findById(subject0.getId()))
-                .willReturn(Optional.of(subject0));
-
-        //when: Esperamos que el método falle al intentar guardar un `subject` duplicado
-        assertThrows(ResourceNotFoundException.class, () ->
-                subjectService.saveSubject(subject0));
-
-        //then: Verificamos que nunca se haya intentado guardar
-        verify(subjectRepository, never()).save(any(Subject.class));
     }
 
     @Test

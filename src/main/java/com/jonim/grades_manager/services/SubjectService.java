@@ -4,8 +4,6 @@ import com.jonim.grades_manager.models.Subject;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 public interface SubjectService {
     ResponseEntity<Page<Subject>> getSubjectList(int page, int size);
 
