@@ -1,5 +1,6 @@
 package com.jonim.grades_manager.services;
 
+import com.jonim.grades_manager.exceptions.ResourceNotFoundException;
 import com.jonim.grades_manager.models.*;
 import com.jonim.grades_manager.repositories.ProfessorRepository;
 import com.jonim.grades_manager.repositories.SubjectRepository;
@@ -45,11 +46,16 @@ public class ProfessorServiceImpl implements ProfessorService { //TODO: Adapt th
                 .collect(Collectors.toList());
 
         Page<ProfessorDTO> professorDTOsPage = new PageImpl<>(professorDTOs, pageable, professorPage.getTotalElements());
-        return professorDTOs.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(professorDTOsPage);
+        return ResponseEntity.ok(professorDTOsPage);
     }
 
     @Override
     public ResponseEntity<ProfessorDTO> saveProfessor(ProfessorCreateUpdateDTO createDTO) {
+
+        if (professorRepository.existsByNameAndSurnameAndSubjectId(createDTO.getName(), createDTO.getSurname(), createDTO.getSubjectId())) {
+            throw new ResourceNotFoundException("Professor already exists with name, surname and subject: " + createDTO.getName() + " " + createDTO.getSurname() + " - " + createDTO.getSubjectId());
+        }
+
         Professor professor = new Professor();
         professor.setName(createDTO.getName());
         professor.setSurname(createDTO.getSurname());
