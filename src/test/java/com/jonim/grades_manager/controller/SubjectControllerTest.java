@@ -3,7 +3,6 @@ package com.jonim.grades_manager.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jonim.grades_manager.controllers.SubjectController;
-import com.jonim.grades_manager.models.Grade;
 import com.jonim.grades_manager.models.Student;
 import com.jonim.grades_manager.models.Subject;
 import com.jonim.grades_manager.services.GradeService;
@@ -21,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.config.Customizer;
@@ -34,7 +32,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
-import static org.mockito.Mockito.when;
 import static org.hamcrest.CoreMatchers.is;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -87,8 +84,8 @@ public class SubjectControllerTest {
                 .thenReturn(ResponseEntity.ok(page));
 
         mockMvc.perform(get("/subjects")
-                .param("page", "0")
-                .param("size", "10"))
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()", is(2)))
                 .andExpect(jsonPath("$.content[0].id", is(1)))
@@ -136,14 +133,14 @@ public class SubjectControllerTest {
         Subject updatedSubject = Subject.builder()
                 .id(1)
                 .name("Updated Maths")
-               .build();
+                .build();
 
         when(subjectService.modifySubject(eq(updatedSubject.getId()), any(Subject.class)))
                 .thenReturn(ResponseEntity.ok(updatedSubject));
 
         mockMvc.perform(put("/subjects/{id}", 1)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(subject0)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(subject0)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("Updated Maths")))
