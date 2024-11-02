@@ -13,9 +13,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -23,10 +22,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.net.URI;
@@ -42,6 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
+@Import(TestSecurityConfig.class)
 public class StudentControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -100,7 +96,9 @@ public class StudentControllerTest {
         when(studentService.getStudentList(0, 10))
                 .thenReturn(ResponseEntity.ok(page));
 
-        mockMvc.perform(get("/students"))
+        mockMvc.perform(get("/students")
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()", is(2)))
                 .andExpect(jsonPath("$.content[0].studentId", is(1)))
@@ -270,21 +268,5 @@ public class StudentControllerTest {
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("The subject was not found for the specified student."))
                 .andDo(print());
-    }
-
-
-    @TestConfiguration
-    @EnableWebSecurity
-    static class TestSecurityConfig {
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            http
-                    .csrf(csrf -> csrf.disable())
-                    .authorizeHttpRequests(authz -> authz
-                            .anyRequest().permitAll()
-                    )
-                    .httpBasic(Customizer.withDefaults());
-            return http.build();
-        }
     }
 }

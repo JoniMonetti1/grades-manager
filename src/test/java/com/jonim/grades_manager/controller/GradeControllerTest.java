@@ -12,9 +12,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -22,10 +21,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.Customizer;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.net.URI;
@@ -41,6 +36,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest
+@Import(TestSecurityConfig.class)
 public class GradeControllerTest {
 
     @Autowired
@@ -107,7 +103,7 @@ public class GradeControllerTest {
     }
 
     @Test
-    public void testGetAllGrades() throws Exception {
+    public void shouldReturnGradesPage() throws Exception {
         //given
         Subject subject1 = Subject.builder()
                 .name("Math")
@@ -147,7 +143,7 @@ public class GradeControllerTest {
     }
 
     @Test
-    public void testGetGradeById() throws Exception {
+    public void shouldReturnGradeById() throws Exception {
         when(gradeService.getGradeById(1))
                 .thenReturn(ResponseEntity.ok(grade0));
 
@@ -166,7 +162,7 @@ public class GradeControllerTest {
     }
 
     @Test
-    public void testModifyGrade() throws Exception {
+    public void shouldModifyGrade() throws Exception {
         Grade updatedGrade = Grade.builder()
                 .id(1)
                 .grade(10.00)
@@ -187,7 +183,7 @@ public class GradeControllerTest {
     }
 
     @Test
-    public void testDeleteGradeById() throws Exception {
+    public void shouldDeleteGradeById() throws Exception {
         when(gradeService.deleteGradeById(eq(grade0.getId())))
                 .thenReturn(ResponseEntity.noContent().build());
 
@@ -196,20 +192,4 @@ public class GradeControllerTest {
                 .andDo(print());
         verify(gradeService, times(1)).deleteGradeById(grade0.getId());
     }
-
-    @TestConfiguration
-    @EnableWebSecurity
-    static class TestSecurityConfig {
-        @Bean
-        public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-            http
-                    .csrf(csrf -> csrf.disable())
-                    .authorizeHttpRequests(authz -> authz
-                            .anyRequest().permitAll()
-                    )
-                    .httpBasic(Customizer.withDefaults());
-            return http.build();
-        }
-    }
-
 }
